@@ -57,15 +57,16 @@ Langchain.rb wraps supported LLMs in a unified interface allowing you to easily 
 #### Supported LLMs and features:
 | LLM providers                                                                                   | `embed()`          | `complete()`       | `chat()`            | `summarize()`      | Notes              |
 | --------                                                                                        |:------------------:| :-------:          | :-----------------: | :-------:          | :----------------- |
-| [OpenAI](https://openai.com/?utm_source=langchainrb&utm_medium=github)                          | ✅                 | ✅                 | ✅                  | ❌                 | Including Azure OpenAI |
+| [OpenAI](https://openai.com/?utm_source=langchainrb&utm_medium=github)                          | ✅                 | ✅                 | ✅                  | ✅                 | Including Azure OpenAI |
 | [AI21](https://ai21.com/?utm_source=langchainrb&utm_medium=github)                              | ❌                 | ✅                 | ❌                  | ✅                 |                    |
 | [Anthropic](https://anthropic.com/?utm_source=langchainrb&utm_medium=github)                    | ❌                 | ✅                 | ✅                  | ❌                 |                    |
-| [AWS Bedrock](https://aws.amazon.com/bedrock?utm_source=langchainrb&utm_medium=github)          | ✅                 | ✅                 | ✅                  | ❌                 | Provides AWS, Cohere, AI21, Antropic and Stability AI models |
+| [AwsBedrock](https://aws.amazon.com/bedrock?utm_source=langchainrb&utm_medium=github)          | ✅                 | ✅                 | ✅                  | ❌                 | Provides AWS, Cohere, AI21, Antropic and Stability AI models |
 | [Cohere](https://cohere.com/?utm_source=langchainrb&utm_medium=github)                          | ✅                 | ✅                 | ✅                  | ✅                 |                    |
 | [GooglePalm](https://ai.google/discover/palm2?utm_source=langchainrb&utm_medium=github)         | ✅                 | ✅                 | ✅                  | ✅                 |                    |
-| [Google Vertex AI](https://cloud.google.com/vertex-ai?utm_source=langchainrb&utm_medium=github) | ✅                 | ✅                 | ❌                  | ✅                 |                    |
+| [GoogleVertexAI](https://cloud.google.com/vertex-ai?utm_source=langchainrb&utm_medium=github) | ✅                 | ❌                 | ✅                  | ❌                 | Requires Google Cloud service auth                   |
+| [GoogleGemini](https://cloud.google.com/vertex-ai?utm_source=langchainrb&utm_medium=github) | ✅                 | ❌                 | ✅                  | ❌                 | Requires Gemini API Key (Limited to US) |
 | [HuggingFace](https://huggingface.co/?utm_source=langchainrb&utm_medium=github)                 | ✅                 | ❌                 | ❌                  | ❌                 |                    |
-| [Mistral AI](https://mistral.ai/?utm_source=langchainrb&utm_medium=github)                      | ✅                 | ❌                 | ✅                  | ❌                 |                    |
+| [MistralAI](https://mistral.ai/?utm_source=langchainrb&utm_medium=github)                      | ✅                 | ❌                 | ✅                  | ❌                 |                    |
 | [Ollama](https://ollama.ai/?utm_source=langchainrb&utm_medium=github)                           | ✅                 | ✅                 | ✅                  | ✅                 |                    |
 | [Replicate](https://replicate.com/?utm_source=langchainrb&utm_medium=github)                    | ✅                 | ✅                 | ✅                  | ✅                 |                    |
 
@@ -342,7 +343,7 @@ You can instantiate any other supported vector search database:
 client = Langchain::Vectorsearch::Chroma.new(...)   # `gem "chroma-db", "~> 0.6.0"`
 client = Langchain::Vectorsearch::Epsilla.new(...)  # `gem "epsilla-ruby", "~> 0.0.3"`
 client = Langchain::Vectorsearch::Hnswlib.new(...)  # `gem "hnswlib", "~> 0.8.1"`
-client = Langchain::Vectorsearch::Milvus.new(...)   # `gem "milvus", "~> 0.9.2"`
+client = Langchain::Vectorsearch::Milvus.new(...)   # `gem "milvus", "~> 0.9.3"`
 client = Langchain::Vectorsearch::Pinecone.new(...) # `gem "pinecone", "~> 0.1.6"`
 client = Langchain::Vectorsearch::Pgvector.new(...) # `gem "pgvector", "~> 0.2"`
 client = Langchain::Vectorsearch::Qdrant.new(...)   # `gem "qdrant-ruby", "~> 0.9.3"`
@@ -413,37 +414,24 @@ Assistants are Agent-like objects that leverage helpful instructions, LLMs, tool
 | "ruby_code_interpreter" | Interprets Ruby expressions             |                                                               | `gem "safe_ruby", "~> 1.0.4"`             |
 | "google_search"     | A wrapper around Google Search                     | `ENV["SERPAPI_API_KEY"]` (https://serpapi.com/manage-api-key) | `gem "google_search_results", "~> 2.0.0"` |
 | "news_retriever"     | A wrapper around NewsApi.org                     | `ENV["NEWS_API_KEY"]` (https://newsapi.org/) |  |
+| "tavily"     | A wrapper around Tavily AI                     | `ENV["TAVILY_API_KEY"]` (https://tavily.com/) |  |
 | "weather"  | Calls Open Weather API to retrieve the current weather        |      `ENV["OPEN_WEATHER_API_KEY"]` (https://home.openweathermap.org/api_keys)               | `gem "open-weather-ruby-client", "~> 0.3.0"`    |
 | "wikipedia"  | Calls Wikipedia API to retrieve the summary        |                                                               | `gem "wikipedia-client", "~> 1.17.0"`     |
 
 ### Demos
 1. [Building an AI Assistant that operates a simulated E-commerce Store](https://www.loom.com/share/83aa4fd8dccb492aad4ca95da40ed0b2)
 2. [New Langchain.rb Assistants interface](https://www.loom.com/share/e883a4a49b8746c1b0acf9d58cf6da36)
+3. [Langchain.rb Assistant demo with NewsRetriever and function calling on Gemini](https://youtu.be/-ieyahrpDpM&t=1477s) - [code](https://github.com/palladius/gemini-news-crawler)
 
 ### Creating an Assistant
 1. Instantiate an LLM of your choice
 ```ruby
 llm = Langchain::LLM::OpenAI.new(api_key: ENV["OPENAI_API_KEY"])
 ```
-2. Instantiate a Thread. Threads keep track of the messages in the Assistant conversation.
-```ruby
-thread = Langchain::Thread.new
-```
-You can pass old message from previously using the Assistant:
-```ruby
-thread.messages = messages
-```
-Messages contain the conversation history and the whole message history is sent to the LLM every time. A Message belongs to 1 of the 4 roles:
-* `Message(role: "system")` message usually contains the instructions.
-* `Message(role: "user")` messages come from the user.
-* `Message(role: "assistant")` messages are produced by the LLM.
-* `Message(role: "tool")` messages are sent in response to tool calls with tool outputs.
-
-3. Instantiate an Assistant
+2. Instantiate an Assistant
 ```ruby
 assistant = Langchain::Assistant.new(
   llm: llm,
-  thread: thread,
   instructions: "You are a Meteorologist Assistant that is able to pull the weather for any location",
   tools: [
     Langchain::Tool::Weather.new(api_key: ENV["OPEN_WEATHER_API_KEY"])
@@ -479,7 +467,7 @@ assistant.add_message_and_run content: "What about Sacramento, CA?", auto_tool_e
 ### Accessing Thread messages
 You can access the messages in a Thread by calling `assistant.thread.messages`.
 ```ruby
-assistant.thread.messages
+assistant.messages
 ```
 
 The Assistant checks the context window limits before every request to the LLM and remove oldest thread messages one by one if the context window is exceeded.

@@ -5,10 +5,10 @@ module Langchain::LLM
   # Wrapper around Anthropic APIs.
   #
   # Gem requirements:
-  #   gem "anthropic", "~> 0.1.0"
+  #   gem "anthropic", "~> 0.3.0"
   #
   # Usage:
-  #     anthorpic = Langchain::LLM::Anthropic.new(api_key: ENV["ANTHROPIC_API_KEY"])
+  #     anthropic = Langchain::LLM::Anthropic.new(api_key: ENV["ANTHROPIC_API_KEY"])
   #
   class Anthropic < Base
     DEFAULTS = {
@@ -17,9 +17,6 @@ module Langchain::LLM
       chat_completion_model_name: "claude-3-sonnet-20240229",
       max_tokens_to_sample: 256
     }.freeze
-
-    # TODO: Implement token length validator for Anthropic
-    # LENGTH_VALIDATOR = Langchain::Utils::TokenLength::AnthropicValidator
 
     # Initialize an Anthropic LLM instance
     #
@@ -81,7 +78,10 @@ module Langchain::LLM
       parameters[:metadata] = metadata if metadata
       parameters[:stream] = stream if stream
 
-      response = client.complete(parameters: parameters)
+      response = with_api_error_handling do
+        client.complete(parameters: parameters)
+      end
+
       Langchain::LLM::AnthropicResponse.new(response)
     end
 
@@ -112,6 +112,15 @@ module Langchain::LLM
       response = client.messages(parameters: parameters)
 
       Langchain::LLM::AnthropicResponse.new(response)
+    end
+
+    def with_api_error_handling
+      response = yield
+      return if response.empty?
+
+      raise Langchain::LLM::ApiError.new "Anthropic API error: #{response.dig("error", "message")}" if response&.dig("error")
+
+      response
     end
 
     private

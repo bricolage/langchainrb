@@ -15,8 +15,8 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version = ">= 3.1.0"
 
   spec.metadata["homepage_uri"] = spec.homepage
-  spec.metadata["source_code_uri"] = "https://github.com/andreibondarev/langchainrb"
-  spec.metadata["changelog_uri"] = "https://github.com/andreibondarev/langchainrb/CHANGELOG.md"
+  spec.metadata["source_code_uri"] = "https://github.com/patterns-ai-core/langchainrb"
+  spec.metadata["changelog_uri"] = "https://github.com/patterns-ai-core/langchainrb/blob/main/CHANGELOG.md"
   spec.metadata["documentation_uri"] = "https://rubydoc.info/gems/langchainrb"
 
   # Specify which files should be added to the gem when it is released.
@@ -27,10 +27,8 @@ Gem::Specification.new do |spec|
 
   # dependencies
   # Not sure if we should require this as it only applies to OpenAI usecase.
-  spec.add_dependency "activesupport", ">= 7.0.8"
   spec.add_dependency "baran", "~> 0.1.9"
   spec.add_dependency "colorize", "~> 1.1.0"
-  spec.add_dependency "tiktoken_ruby", "~> 0.0.8"
   spec.add_dependency "json-schema", "~> 4"
   spec.add_dependency "zeitwerk", "~> 2.5"
   spec.add_dependency "pragmatic_segmenter", "~> 0.3.0"
@@ -47,7 +45,7 @@ Gem::Specification.new do |spec|
 
   # optional dependencies
   spec.add_development_dependency "ai21", "~> 0.2.1"
-  spec.add_development_dependency "anthropic", "~> 0.2"
+  spec.add_development_dependency "anthropic", "~> 0.3"
   spec.add_development_dependency "aws-sdk-bedrockruntime", "~> 1.1"
   spec.add_development_dependency "chroma-db", "~> 0.6.0"
   spec.add_development_dependency "cohere-ruby", "~> 0.9.10"
@@ -55,12 +53,13 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "elasticsearch", "~> 8.2.0"
   spec.add_development_dependency "epsilla-ruby", "~> 0.0.4"
   spec.add_development_dependency "eqn", "~> 1.6.5"
+  spec.add_development_dependency "faraday"
   spec.add_development_dependency "googleauth"
   spec.add_development_dependency "google_palm_api", "~> 0.1.3"
   spec.add_development_dependency "google_search_results", "~> 2.0.0"
   spec.add_development_dependency "hnswlib", "~> 0.8.1"
   spec.add_development_dependency "hugging-face", "~> 0.3.4"
-  spec.add_development_dependency "milvus", "~> 0.9.2"
+  spec.add_development_dependency "milvus", "~> 0.9.3"
   spec.add_development_dependency "llama_cpp", "~> 0.9.4"
   spec.add_development_dependency "nokogiri", "~> 1.13"
   spec.add_development_dependency "mail", "~> 2.8"
@@ -79,6 +78,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "sequel", "~> 5.68.0"
   spec.add_development_dependency "weaviate-ruby", "~> 0.8.10"
   spec.add_development_dependency "wikipedia-client", "~> 1.17.0"
-  spec.add_development_dependency "faraday"
   spec.add_development_dependency "power_point_pptx", "~> 0.1.0"
 end

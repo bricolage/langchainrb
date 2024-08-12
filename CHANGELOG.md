@@ -1,4 +1,34 @@
 ## [Unreleased]
+- [BREAKING] Langchain::LLM::OpenAI#chat() uses `gpt-4o-mini` by default instead of `gpt-3.5-turbo` previously.
+- [BREAKING] Assistant works with a number of open-source models via Ollama.
+- [BREAKING] Introduce new `Langchain::ToolDefinition` module to define tools. This replaces the previous reliance on subclassing from `Langchain::Tool::Base`.
+
+## [0.14.0] - 2024-07-12
+- Removed TokenLength validators
+- Assistant works with a Mistral LLM now
+- Assistant keeps track of tokens used
+- Misc fixes and improvements
+
+## [0.13.5] - 2024-07-01
+- Add Milvus#remove_texts() method
+- Langchain::Assistant has a `state` now
+- Misc fixes and improvements
+
+## [0.13.4] - 2024-06-16
+- Fix Chroma#remove_texts() method
+- Fix NewsRetriever Tool returning non UTF-8 characters
+- Misc fixes and improvements
+
+## [0.13.3] - 2024-06-03
+- New 🛠️  `Langchain::Tool::Tavily` to execute search (better than the GoogleSearch tool)
+- Remove `activesupport` dependency
+- Misc fixes and improvements
+
+## [0.13.2] - 2024-05-20
+- New `Langchain::LLM::GoogleGemini#embed()` method
+- `Langchain::Assistant` works with `Langchain::LLM::Anthropic` llm
+- New XLS file processor
+- Fixes and improvements
 
 ## [0.13.1] - 2024-05-14
 - Better error handling for `Langchain::LLM::GoogleVertexAI`

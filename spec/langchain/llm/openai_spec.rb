@@ -204,10 +204,10 @@ RSpec.describe Langchain::LLM::OpenAI do
   describe "#complete" do
     let(:response) do
       {
-        "id" => "cmpl-7BZg4cP5xzga4IyLI6u97WMepAJj2",
+        "id" => "chatcmpl-9orgr5hNUdCsQeNWGnmNnbXQVIcPN",
         "object" => "chat.completion",
-        "created" => 1682993108,
-        "model" => "gpt-3.5-turbo",
+        "created" => 1721906887,
+        "model" => "gpt-4o-mini-2024-07-18",
         "choices" => [
           {
             "message" => {
@@ -236,7 +236,7 @@ RSpec.describe Langchain::LLM::OpenAI do
         {
           parameters: {
             n: 1,
-            model: "gpt-3.5-turbo",
+            model: "gpt-4o-mini",
             messages: [{content: "Hello World", role: "user"}],
             temperature: 0.0
             # max_tokens: 4087
@@ -248,7 +248,7 @@ RSpec.describe Langchain::LLM::OpenAI do
         response = subject.complete(prompt: "Hello World")
 
         expect(response).to be_a(Langchain::LLM::OpenAIResponse)
-        expect(response.model).to eq("gpt-3.5-turbo")
+        expect(response.model).to eq("gpt-4o-mini-2024-07-18")
         expect(response.completion).to eq("The meaning of life is subjective and can vary from person to person.")
         expect(response.prompt_tokens).to eq(7)
         expect(response.completion_tokens).to eq(16)
@@ -259,7 +259,7 @@ RSpec.describe Langchain::LLM::OpenAI do
         response = subject.complete(prompt: "Hello World")
 
         expect(response).to be_a(Langchain::LLM::OpenAIResponse)
-        expect(response.model).to eq("gpt-3.5-turbo")
+        expect(response.model).to eq("gpt-4o-mini-2024-07-18")
         expect(response.completions).to eq([{"message" => {"role" => "assistant", "content" => "The meaning of life is subjective and can vary from person to person."}, "finish_reason" => "stop", "index" => 0}])
         expect(response.completion).to eq("The meaning of life is subjective and can vary from person to person.")
       end
@@ -297,7 +297,7 @@ RSpec.describe Langchain::LLM::OpenAI do
             parameters: {
               n: 1,
               # max_tokens: 4087,
-              model: "gpt-3.5-turbo",
+              model: "gpt-4o-mini",
               messages: [{content: "Hello World", role: "user"}],
               temperature: 0.0
             }
@@ -331,7 +331,7 @@ RSpec.describe Langchain::LLM::OpenAI do
             parameters: {
               n: 1,
               # max_tokens: 4087 ,
-              model: "gpt-3.5-turbo",
+              model: "gpt-4o-mini",
               messages: [{content: "Hello World", role: "user"}],
               temperature: 0.0
             }
@@ -355,7 +355,7 @@ RSpec.describe Langchain::LLM::OpenAI do
 
     context "with failed API call" do
       let(:parameters) do
-        {parameters: {n: 1, model: "gpt-3.5-turbo", messages: [{content: "Hello World", role: "user"}], temperature: 0.0}} # , max_tokens: 4087}}
+        {parameters: {n: 1, model: "gpt-4o-mini", messages: [{content: "Hello World", role: "user"}], temperature: 0.0}} # , max_tokens: 4087}}
       end
       let(:response) do
         {"error" => {"code" => 400, "message" => "User location is not supported for the API use.", "type" => "invalid_request_error"}}
@@ -390,7 +390,7 @@ RSpec.describe Langchain::LLM::OpenAI do
 
   describe "#chat" do
     let(:prompt) { "What is the meaning of life?" }
-    let(:model) { "gpt-3.5-turbo" }
+    let(:model) { "gpt-4o-mini" }
     let(:temperature) { 0.0 }
     let(:n) { 1 }
     let(:history) { [content: prompt, role: "user"] }
@@ -411,10 +411,10 @@ RSpec.describe Langchain::LLM::OpenAI do
     end
     let(:response) do
       {
-        "id" => "chatcmpl-7Hcl1sXOtsaUBKJGGhNujEIwhauaD",
+        "id" => "chatcmpl-9otuxUHnW84Zqu97VE1eKPmXVLAv0",
         "object" => "chat.completion",
-        "created" => 1684434915,
-        "model" => model,
+        "created" => 1721918375,
+        "model" => "gpt-4o-mini-2024-07-18",
         "usage" => {
           "prompt_tokens" => 14,
           "completion_tokens" => 25,
@@ -428,7 +428,7 @@ RSpec.describe Langchain::LLM::OpenAI do
       allow(subject.client).to receive(:chat).with(parameters).and_return(response)
     end
 
-    it "ignores any invalid parameters provided" do
+    it "ignoresq any invalid parameters provided" do
       response = subject.chat(
         messages: [{role: "user", content: "What is the meaning of life?"}],
         top_k: 5,
@@ -442,7 +442,7 @@ RSpec.describe Langchain::LLM::OpenAI do
       response = subject.chat(messages: [{role: "user", content: "What is the meaning of life?"}])
 
       expect(response).to be_a(Langchain::LLM::OpenAIResponse)
-      expect(response.model).to eq("gpt-3.5-turbo")
+      expect(response.model).to eq("gpt-4o-mini-2024-07-18")
       expect(response.chat_completion).to eq("As an AI language model, I don't have feelings, but I'm functioning well. How can I assist you today?")
       expect(response.prompt_tokens).to eq(14)
       expect(response.completion_tokens).to eq(25)
@@ -454,7 +454,7 @@ RSpec.describe Langchain::LLM::OpenAI do
         response = subject.chat(messages: [{role: "user", content: prompt}])
 
         expect(response).to be_a(Langchain::LLM::OpenAIResponse)
-        expect(response.model).to eq(model)
+        expect(response.model).to eq("gpt-4o-mini-2024-07-18")
         expect(response.completions).to eq(choices)
         expect(response.chat_completion).to eq(answer)
       end
@@ -598,6 +598,59 @@ RSpec.describe Langchain::LLM::OpenAI do
       end
     end
 
+    context "with streaming and tool_calls" do
+      let(:tools) do
+        [{
+          "type" => "function",
+          "function" => {
+            "name" => "foo",
+            "parameters" => {
+              "type" => "object",
+              "properties" => {
+                "value" => {
+                  "type" => "string"
+                }
+              }
+            },
+            "required" => ["value"]
+          }
+        }]
+      end
+      let(:chunk_deltas) do
+        [
+          {"role" => "assistant", "content" => nil},
+          {"tool_calls" => [{"index" => 0, "id" => "call_123456", "type" => "function", "function" => {"name" => "foo", "arguments" => ""}}]},
+          {"tool_calls" => [{"index" => 0, "function" => {"arguments" => "{\"va"}}]},
+          {"tool_calls" => [{"index" => 0, "function" => {"arguments" => "lue\":"}}]},
+          {"tool_calls" => [{"index" => 0, "function" => {"arguments" => " \"my_s"}}]},
+          {"tool_calls" => [{"index" => 0, "function" => {"arguments" => "trin"}}]},
+          {"tool_calls" => [{"index" => 0, "function" => {"arguments" => "g\"}"}}]}
+        ]
+      end
+      let(:chunks) { chunk_deltas.map { |delta| {"id" => "chatcmpl-abcdefg", "choices" => [{"index" => 0, "delta" => delta}]} } }
+      let(:expected_tool_calls) do
+        [
+          {"id" => "call_123456", "type" => "function", "function" => {"name" => "foo", "arguments" => "{\"value\": \"my_string\"}"}}
+        ]
+      end
+
+      it "handles streaming responses correctly" do
+        allow(subject.client).to receive(:chat) do |parameters|
+          chunks.each do |chunk|
+            parameters[:parameters][:stream].call(chunk)
+          end
+          chunks.last
+        end
+
+        response = subject.chat(messages: [content: prompt, role: "user"], tools:) do |chunk|
+          chunk
+        end
+
+        expect(response).to be_a(Langchain::LLM::OpenAIResponse)
+        expect(response.raw_response.dig("choices", 0, "message", "tool_calls")).to eq(expected_tool_calls)
+      end
+    end
+
     context "with failed API call" do
       let(:response) do
         {"error" => {"code" => 400, "message" => "User location is not supported for the API use.", "type" => "invalid_request_error"}}
@@ -628,6 +681,76 @@ RSpec.describe Langchain::LLM::OpenAI do
 
     it "returns a summary" do
       expect(subject.summarize(text: text)).to eq("Summary")
+    end
+  end
+
+  describe "tool_calls_from_choice_chunks" do
+    context "without tool_calls" do
+      let(:chunks) do
+        [
+          {"id" => "chatcmpl-abcdefg", "choices" => [{"index" => 0, "delta" => {"role" => "assistant", "content" => nil}}]},
+          {"id" => "chatcmpl-abcdefg", "choices" => [{"index" => 0, "delta" => {"role" => "assistant", "content" => "Hello"}}]}
+        ]
+      end
+
+      it "returns nil" do
+        expect(subject.send(:tool_calls_from_choice_chunks, chunks)).to eq(nil)
+      end
+    end
+
+    context "with tool_calls" do
+      let(:chunk_deltas) do
+        [
+          {"role" => "assistant", "content" => nil},
+          {"tool_calls" => [{"index" => 0, "id" => "call_123456", "type" => "function", "function" => {"name" => "foo", "arguments" => ""}}]},
+          {"tool_calls" => [{"index" => 0, "function" => {"arguments" => "{\"va"}}]},
+          {"tool_calls" => [{"index" => 0, "function" => {"arguments" => "lue\":"}}]},
+          {"tool_calls" => [{"index" => 0, "function" => {"arguments" => " \"my_s"}}]},
+          {"tool_calls" => [{"index" => 0, "function" => {"arguments" => "trin"}}]},
+          {"tool_calls" => [{"index" => 0, "function" => {"arguments" => "g\"}"}}]}
+        ]
+      end
+      let(:chunks) { chunk_deltas.map { |delta| {"id" => "chatcmpl-abcdefg", "choices" => [{"index" => 0, "delta" => delta}]} } }
+      let(:expected_tool_calls) do
+        [
+          {"id" => "call_123456", "type" => "function", "function" => {"name" => "foo", "arguments" => "{\"value\": \"my_string\"}"}}
+        ]
+      end
+
+      it "returns the tool_calls" do
+        expect(subject.send(:tool_calls_from_choice_chunks, chunks)).to eq(expected_tool_calls)
+      end
+    end
+
+    context "with multiple tool_calls" do
+      let(:chunk_deltas) do
+        [
+          {"role" => "assistant", "content" => nil},
+          {"tool_calls" => [{"index" => 0, "id" => "call_123", "type" => "function", "function" => {"name" => "foo", "arguments" => ""}}]},
+          {"tool_calls" => [{"index" => 0, "function" => {"arguments" => "{\"va"}}]},
+          {"tool_calls" => [{"index" => 0, "function" => {"arguments" => "lue\":"}}]},
+          {"tool_calls" => [{"index" => 0, "function" => {"arguments" => " \"my_s"}}]},
+          {"tool_calls" => [{"index" => 0, "function" => {"arguments" => "trin"}}]},
+          {"tool_calls" => [{"index" => 0, "function" => {"arguments" => "g\"}"}}]},
+          {"tool_calls" => [{"index" => 1, "id" => "call_456", "type" => "function", "function" => {"name" => "bar", "arguments" => ""}}]},
+          {"tool_calls" => [{"index" => 1, "function" => {"arguments" => "{\"va"}}]},
+          {"tool_calls" => [{"index" => 1, "function" => {"arguments" => "lue\":"}}]},
+          {"tool_calls" => [{"index" => 1, "function" => {"arguments" => " \"other_s"}}]},
+          {"tool_calls" => [{"index" => 1, "function" => {"arguments" => "trin"}}]},
+          {"tool_calls" => [{"index" => 1, "function" => {"arguments" => "g\"}"}}]}
+        ]
+      end
+      let(:chunks) { chunk_deltas.map { |delta| {"id" => "chatcmpl-abcdefg", "choices" => [{"index" => 0, "delta" => delta}]} } }
+      let(:expected_tool_calls) do
+        [
+          {"id" => "call_123", "type" => "function", "function" => {"name" => "foo", "arguments" => "{\"value\": \"my_string\"}"}},
+          {"id" => "call_456", "type" => "function", "function" => {"name" => "bar", "arguments" => "{\"value\": \"other_string\"}"}}
+        ]
+      end
+
+      it "returns the tool_calls" do
+        expect(subject.send(:tool_calls_from_choice_chunks, chunks)).to eq(expected_tool_calls)
+      end
     end
   end
 end

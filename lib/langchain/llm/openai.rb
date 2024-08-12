@@ -16,7 +16,7 @@ module Langchain::LLM
     DEFAULTS = {
       n: 1,
       temperature: 0.0,
-      chat_completion_model_name: "gpt-3.5-turbo",
+      chat_completion_model_name: "gpt-4o-mini",
       embeddings_model_name: "text-embedding-3-small"
     }.freeze
 
@@ -25,8 +25,6 @@ module Langchain::LLM
       "text-embedding-3-large" => 3072,
       "text-embedding-3-small" => 1536
     }.freeze
-
-    LENGTH_VALIDATOR = Langchain::Utils::TokenLength::OpenAIValidator
 
     attr_reader :defaults
 
@@ -81,8 +79,6 @@ module Langchain::LLM
       elsif EMBEDDING_SIZES.key?(model)
         parameters[:dimensions] = EMBEDDING_SIZES[model]
       end
-
-      validate_max_tokens(text, parameters[:model])
 
       response = with_api_error_handling do
         client.embeddings(parameters: parameters)
@@ -177,10 +173,6 @@ module Langchain::LLM
       response
     end
 
-    def validate_max_tokens(messages, model, max_tokens = nil)
-      LENGTH_VALIDATOR.validate_max_tokens!(messages, model, max_tokens: max_tokens, llm: self)
-    end
-
     def response_from_chunks
       grouped_chunks = @response_chunks.group_by { |chunk| chunk.dig("choices", 0, "index") }
       final_choices = grouped_chunks.map do |index, chunks|
@@ -188,12 +180,31 @@ module Langchain::LLM
           "index" => index,
           "message" => {
             "role" => "assistant",
-            "content" => chunks.map { |chunk| chunk.dig("choices", 0, "delta", "content") }.join
-          },
+            "content" => chunks.map { |chunk| chunk.dig("choices", 0, "delta", "content") }.join,
+            "tool_calls" => tool_calls_from_choice_chunks(chunks)
+          }.compact,
           "finish_reason" => chunks.last.dig("choices", 0, "finish_reason")
         }
       end
       @response_chunks.first&.slice("id", "object", "created", "model")&.merge({"choices" => final_choices})
+    end
+
+    def tool_calls_from_choice_chunks(choice_chunks)
+      tool_call_chunks = choice_chunks.select { |chunk| chunk.dig("choices", 0, "delta", "tool_calls") }
+      return nil if tool_call_chunks.empty?
+
+      tool_call_chunks.group_by { |chunk| chunk.dig("choices", 0, "delta", "tool_calls", 0, "index") }.map do |index, chunks|
+        first_chunk = chunks.first
+
+        {
+          "id" => first_chunk.dig("choices", 0, "delta", "tool_calls", 0, "id"),
+          "type" => first_chunk.dig("choices", 0, "delta", "tool_calls", 0, "type"),
+          "function" => {
+            "name" => first_chunk.dig("choices", 0, "delta", "tool_calls", 0, "function", "name"),
+            "arguments" => chunks.map { |chunk| chunk.dig("choices", 0, "delta", "tool_calls", 0, "function", "arguments") }.join
+          }
+        }
+      end
     end
   end
 end
