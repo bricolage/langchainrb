@@ -50,6 +50,7 @@ module Langchain::LLM
         response_format: {default: @defaults[:response_format]}
       )
       chat_parameters.ignore(:top_k)
+      chat_parameters.ignore(:temperature) if @defaults[:temperature].nil?
     end
 
     # Generate an embedding for a given text
