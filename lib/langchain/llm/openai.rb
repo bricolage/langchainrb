@@ -119,7 +119,7 @@ module Langchain::LLM
     # @option params [String] :model ID of the model to use
     def chat(params = {}, &block)
       parameters = chat_parameters.to_params(params)
-      parameters.delete(:temperature) if parameters[:temperature].nil?
+      parameters.delete(:temperature) if parameters[:temperature] < 0
 
       raise ArgumentError.new("messages argument is required") if Array(parameters[:messages]).empty?
       raise ArgumentError.new("model argument is required") if parameters[:model].to_s.empty?
