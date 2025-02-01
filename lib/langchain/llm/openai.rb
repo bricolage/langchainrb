@@ -50,7 +50,6 @@ module Langchain::LLM
         response_format: {default: @defaults[:response_format]}
       )
       chat_parameters.ignore(:top_k)
-      chat_parameters.ignore(:temperature) if @defaults[:temperature].nil?
     end
 
     # Generate an embedding for a given text
@@ -120,6 +119,7 @@ module Langchain::LLM
     # @option params [String] :model ID of the model to use
     def chat(params = {}, &block)
       parameters = chat_parameters.to_params(params)
+      parameters.delete(:temperature) if parameters[:temperature].nil?
 
       raise ArgumentError.new("messages argument is required") if Array(parameters[:messages]).empty?
       raise ArgumentError.new("model argument is required") if parameters[:model].to_s.empty?
